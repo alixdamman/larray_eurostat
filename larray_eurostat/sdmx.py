@@ -2,9 +2,7 @@ from __future__ import absolute_import, division, print_function
 import sys
 import pandas as pd
 from pandasdmx import Request
-import larray as la
-from larray.utils import (table2str, unique, csv_open, unzip, decode, basestring, izip, rproduct,
-                          ReprString, duplicates)
+from larray.core import Axis, df_aslarray
 
 # ESTAT = Eurostat agency
 estat = Request('ESTAT')
@@ -12,7 +10,7 @@ estat = Request('ESTAT')
 
 def get_eurostat_sdmx_variable(var_id, key=None):
     """
-    get SDMX variable. Return its title, associated codelists and data set.
+    get SDMX variable. Return its title, associated codelists and data.
 
     Parameters
     ----------
@@ -30,8 +28,8 @@ def get_eurostat_sdmx_variable(var_id, key=None):
         title
     codelist: pandas.DataFrame
         codelists.
-    df: pandas.DataFrame
-        data set. 
+    arr: LArray
+        data. 
 
     Examples
     --------
@@ -87,4 +85,41 @@ def get_eurostat_sdmx_variable(var_id, key=None):
     data_resp = estat.get(resource_type='data', resource_id=var_id, key=key)
     data = data_resp.msg.data
     df = data_resp.write(s for s in data.series)
-    return title, metadata.codelist, df
+    arr = df_aslarray(df.T, sort_columns=True)
+    return title, metadata.codelist, arr
+
+
+def describe_eurostat_data(arr, metadata):
+    """
+    
+    :param arr: 
+    :param metadata: 
+    :return: 
+    """
+    def gettext(md, name, labels):
+        cl = 'CL_{}'.format(name)
+        if cl in md['name']:
+            md_i = md['name'][cl]
+            return ["{}: {}".format(l, md_i[l]) for l in labels if l in md_i]
+        elif name in md['name']:
+            md_i = md['name'][name]
+            return ["{}: {}".format(l, md_i[l]) for l in labels if l in md_i]
+        else:
+            return labels
+
+    en_axes = [Axis(name, gettext(metadata, name, axis.labels))
+               for name, axis in zip(arr.axes.display_names, arr.axes._list)]
+    en_arr = arr.with_axes(en_axes)
+    return en_arr
+
+
+def get_eurostat_sdmx(var_id, metadata=False, key=None):
+    if key is None:
+        title, df_metadata, data = get_eurostat_sdmx_variable(var_id)
+    else:
+        title, df_metadata, data = get_eurostat_sdmx_variable(var_id, key)
+
+    if metadata:
+        return describe_eurostat_data(data, df_metadata)
+    else:
+        return data
