@@ -44,7 +44,7 @@ before_install:
 install:
     # Setup environment
     - conda create --debug -n travisci --yes python=${TRAVIS_PYTHON_VERSION:0:3}
-            larray nose
+            larray nose -c alcibiade pandasdmx
     - source activate travisci
 
 script:

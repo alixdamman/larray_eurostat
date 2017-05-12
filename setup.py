@@ -14,7 +14,7 @@ AUTHOR = 'Alix Damman, Gaetan de Menten, Geert Bryon, Johan Duyck'
 AUTHOR_EMAIL = 'ald@plan.be'
 DESCRIPTION = "Additional package to import Eurostat files using LArray"
 LONG_DESCRIPTION = readlocal("README.rst")
-INSTALL_REQUIRES = ['larray']
+INSTALL_REQUIRES = ['larray, pandasdmx']
 TESTS_REQUIRE = ['nose >= 1.0']
 TEST_SUITE = 'nose.collector'
 

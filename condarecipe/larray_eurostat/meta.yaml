@@ -16,10 +16,12 @@ requirements:
     - python
     - setuptools
     - larray
+    - pandasdmx
 
   run:
     - python
     - larray
+    - pandasdmx
 
 test:
   imports:
