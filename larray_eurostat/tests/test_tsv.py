@@ -7,7 +7,7 @@ from larray_eurostat.tsv import *
 
 class TestEurostat(TestCase):
     def test_eurostat_get(self):
-        gdp = eurostat_get('nama_aux_cra')
+        gdp = get_eurostat_tsv('nama_aux_cra')
         self.assertEqual(gdp.dtype, float)
         self.assertEqual(gdp.size, 2430)
 

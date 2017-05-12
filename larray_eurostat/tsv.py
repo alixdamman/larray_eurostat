@@ -14,7 +14,7 @@ else:
 EUROSTAT_BASEURL = "http://ec.europa.eu/eurostat/estat-navtree-portlet-prod/BulkDownloadListing?sort=1&file=data%2F"
 
 
-def eurostat_get(indicator, drop_markers=True):
+def get_eurostat_tsv(indicator, drop_markers=True):
     """Gets Eurostat indicator and returns it as an array.
 
     Parameters
